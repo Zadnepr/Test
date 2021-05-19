@@ -36,25 +36,6 @@ class V1Controller extends ApiController
         return $result;
     }
 
-    private static function getReques(){
-        return Yii::$app->request;
-    }
-    private static function getRequestGet(){
-        $result = Yii::$app->request->get();
-        unset($result['method']);
-        return $result;
-    }
-    private static function getRequestPost(){
-        return Yii::$app->request->post();
-    }
 }
 
-interface methodInterface{
-    public static function doMethod($request);
-}
-class method implements methodInterface{
-    public static function doMethod($request){
-
-    }
-}
 

@@ -31,7 +31,7 @@ class ApiController extends Controller
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => Bearer::className(),
-            'except' => [ 'login', 'signup' ],
+            'except' => [ ],
         ];
         return $behaviors;
     }
@@ -42,8 +42,47 @@ class ApiController extends Controller
         return parent::beforeAction($action);
     }
 
+    protected static function getReques(){
+        return Yii::$app->request;
+    }
+    protected static function getRequestGet(){
+        $result = Yii::$app->request->get();
+        unset($result['method']);
+        return $result;
+    }
+    protected static function getRequestPost(){
+        return Yii::$app->request->post();
+    }
+
     public function actionIndex(){
         return 'ApiController';
     }
 
 }
+
+interface methodInterface{
+    public static function doMethod($request = null);
+}
+
+interface methodInterfaceParent{
+    public function returnSuccess($data = null);
+    public function returnError($message = null, $code = 403);
+}
+
+class method implements methodInterfaceParent{
+    public function returnSuccess($data = null){
+        return [
+            'status' => 'success',
+            'code' => 200,
+            'data' => $data
+        ];
+    }
+    public function returnError($message = null, $code = 403){
+        return [
+            'status' => 'error',
+            'code' => $code,
+            'data' => $message
+        ];
+    }
+}
+

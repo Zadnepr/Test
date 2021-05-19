@@ -4,28 +4,17 @@ namespace app\controllers\api\v1;
 use app\models\Btc;
 use yii\helpers\ArrayHelper;
 
-class methodConvert extends \app\controllers\method
+class methodConvert extends \app\controllers\method implements \app\controllers\methodInterface
 {
     public static function doMethod($request=null){
         $get = $request->get();
         $post = $request->post();
 
         $data = Btc::getData();
-        if(!$data) return [
-            'status' => "error",
-            'code' => 400,
-            'message' => 'Data source is missing',
-        ];
-        if(!$post['currency_from'] or !$post['currency_to'] or !$post['value']) return [
-                'status' => "error",
-                'code' => 400,
-                'message' => 'Bad request',
-            ];
-        if($post['value'] < 0.01) return [
-            'status' => "error",
-            'code' => 400,
-            'message' => 'Bad request. Min value "currency_from" is 0.01',
-        ];
+        if(!$data) return self::returnError('Data source is missing', 400);
+        if(!$post['currency_from'] or !$post['currency_to'] or !$post['value'])
+            return self::returnError('Bad request', 400);
+        if($post['value'] < 0.01) return self::returnError('Bad request. Min value "currency_from" is 0.01', 400);
         $rate = 1.02;
         if($post['currency_from'] == 'BTC' AND isset($data[$post['currency_to']])){
             $currency = $data[$post['currency_to']]['sell'] * $rate;
@@ -44,10 +33,6 @@ class methodConvert extends \app\controllers\method
             'rate' => $rate,
         ];
 
-        return [
-            'status' => 'success',
-            'code' => 200,
-            'data' => $data
-        ];
+        return self::returnSuccess($data);
     }
 }

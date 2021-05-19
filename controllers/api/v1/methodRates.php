@@ -9,11 +9,7 @@ class methodRates extends \app\controllers\method
     public static function doMethod($request=null){
         $get = $request->get();
         $data = Btc::getData();
-        if(!$data) return [
-            'status' => "error",
-            'code' => 400,
-            'message' => 'Data source is missing',
-        ];
+        if(!$data) return self::returnError('Data source is missing', 400);
         array_walk($data, function(&$a, $b) { $a = $a['sell'] * 1.02; });
         asort ( $data );
         if($get['currency']){
@@ -23,11 +19,6 @@ class methodRates extends \app\controllers\method
                 return false;
             }, ARRAY_FILTER_USE_KEY );
         }
-
-        return [
-            'status' => 'success',
-            'code' => 200,
-            'data' => $data
-        ];
+        return self::returnSuccess($data);
     }
 }
