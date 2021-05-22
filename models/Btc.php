@@ -27,6 +27,7 @@ class Btc
             if ($result !== false) {
                 $result = json_decode($result, true);
             }
+            self::$data = $result;
         }
         else $result = self::$data;
         return $result;
